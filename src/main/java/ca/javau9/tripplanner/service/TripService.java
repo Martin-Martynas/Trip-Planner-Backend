@@ -6,9 +6,11 @@ import ca.javau9.tripplanner.models.Trip;
 import ca.javau9.tripplanner.repository.ItineraryItemRepository;
 import ca.javau9.tripplanner.repository.TripRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class TripService {
     TripRepository tripRepository;
     ItineraryItemRepository itineraryItemRepository;

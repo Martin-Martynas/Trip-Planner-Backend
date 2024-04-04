@@ -78,8 +78,8 @@ public class UserService {
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
 
-        tripRepository.deleteByUser(userEntity);
-        itineraryItemRepository.deleteByTripUser(userEntity);
+        tripRepository.deleteByUserEntity(userEntity);
+        itineraryItemRepository.deleteByTripUserEntity(userEntity);
 
         userRepository.delete(userEntity);
     }

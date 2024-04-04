@@ -1,9 +1,7 @@
 package ca.javau9.tripplanner.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -25,6 +23,8 @@ public class ItineraryItem {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
     @ManyToOne
+    @JoinColumn(name="trip_id")
+    @JsonBackReference
     private Trip trip;
 
     public ItineraryItem () {}
@@ -39,6 +39,13 @@ public class ItineraryItem {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.trip = trip;
+    }
+
+    public ItineraryItem(LocalDate tripDate, LocalTime activityTime, String activity, String notes) {
+        this.tripDate = tripDate;
+        this.activityTime = activityTime;
+        this.activity = activity;
+        this.notes = notes;
     }
 
     @Override

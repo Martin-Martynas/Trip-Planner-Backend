@@ -1,5 +1,7 @@
 package ca.javau9.tripplanner.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -22,8 +24,11 @@ public class Trip {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
     @ManyToOne
+    @JoinColumn(name="userEntity_id")
+    @JsonBackReference
     private UserEntity userEntity;
-    @OneToMany
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.PERSIST )
+    @JsonManagedReference
     private List<ItineraryItem> itineraryItems;
 
     public Trip() {}
@@ -39,6 +44,12 @@ public class Trip {
         this.updatedAt = updatedAt;
         this.userEntity = userEntity;
         this.itineraryItems = itineraryItem;
+    }
+    public Trip(String destination, LocalDate startDate, LocalDate endDate, Double budget) {
+        this.destination = destination;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.budget = budget;
     }
 
     @Override

@@ -1,9 +1,7 @@
 package ca.javau9.tripplanner.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -22,7 +20,8 @@ public class UserEntity {
     private LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-    @OneToMany
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.PERSIST )
+    @JsonManagedReference
     private List<Trip> trips;
 
     public UserEntity () {}
@@ -36,6 +35,11 @@ public class UserEntity {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.trips = trips;
+    }
+    public UserEntity(String username, String email, String password ) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
     }
 
     @Override
