@@ -24,7 +24,7 @@ public class Trip {
     @ManyToOne
     private UserEntity userEntity;
     @OneToMany
-    private List<ItineraryItem> itineraryItem;
+    private List<ItineraryItem> itineraryItems;
 
     public Trip() {}
 
@@ -38,7 +38,7 @@ public class Trip {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.userEntity = userEntity;
-        this.itineraryItem = itineraryItem;
+        this.itineraryItems = itineraryItem;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class Trip {
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 ", userEntity=" + userEntity +
-                ", itineraryItem=" + itineraryItem +
+                ", itineraryItem=" + itineraryItems +
                 '}';
     }
 
@@ -122,12 +122,12 @@ public class Trip {
         this.userEntity = userEntity;
     }
 
-    public List<ItineraryItem> getItineraryItem() {
-        return itineraryItem;
+    public List<ItineraryItem> getItineraryItems() {
+        return itineraryItems;
     }
 
-    public void setItineraryItem(List<ItineraryItem> itineraryItem) {
-        this.itineraryItem = itineraryItem;
+    public void setItineraryItem(List<ItineraryItem> itineraryItems) {
+        this.itineraryItems = itineraryItems;
     }
 
 

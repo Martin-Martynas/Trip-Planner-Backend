@@ -1,9 +1,14 @@
 package ca.javau9.tripplanner.service;
 
 import ca.javau9.tripplanner.dto.TripRequest;
+import ca.javau9.tripplanner.exception.TripNotFoundException;
+import ca.javau9.tripplanner.exception.UserNotFoundException;
 import ca.javau9.tripplanner.models.Trip;
+import ca.javau9.tripplanner.models.UserEntity;
 import ca.javau9.tripplanner.repository.TripRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Optional;
 
 public class TripService {
     TripRepository tripRepository;
@@ -22,5 +27,14 @@ public class TripService {
 
         return tripRepository.save(trip);
 
+    }
+
+    public Trip getTripById(Long tripId) {
+        Optional<Trip> box = tripRepository.findById(tripId);
+        if(box.isPresent()) {
+            return box.get();
+        } else {
+            throw new TripNotFoundException("Trip not found with ID: " + tripId);
+        }
     }
 }

@@ -2,11 +2,14 @@ package ca.javau9.tripplanner.service;
 
 import ca.javau9.tripplanner.dto.UserRegistrationRequest;
 import ca.javau9.tripplanner.exception.EmailAlreadyRegisteredException;
+import ca.javau9.tripplanner.exception.UserNotFoundException;
 import ca.javau9.tripplanner.exception.UsernameAlreadyExistsException;
 import ca.javau9.tripplanner.models.UserEntity;
 import ca.javau9.tripplanner.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -36,5 +39,22 @@ public class UserService {
     }
 
 
+    public UserEntity getUserById(Long userEntityId) {
+        Optional<UserEntity> box = userRepository.findById(userEntityId);
+        if(box.isPresent()) {
+            return box.get();
+        } else {
+            throw new UserNotFoundException("User not found with ID: " + userEntityId);
+        }
+    }
 
+    public UserEntity getUserByUsername(String idOrUsername) {
+        Optional<UserEntity> box = userRepository.findUserEntityByUsername(idOrUsername);
+        if(box.isPresent()) {
+            return box.get();
+        } else {
+            throw new UserNotFoundException("User not found with Username: " + idOrUsername);
+        }
+
+    }
 }
