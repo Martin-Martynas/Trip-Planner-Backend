@@ -56,6 +56,21 @@ public class ItineraryItemController {
         }
     }
 
+    @PutMapping("/{itineraryItemId}")
+    public ResponseEntity<?> updateItineraryItem(@PathVariable Long itineraryItemId, /*@Valid*/
+                                                 @RequestBody ItineraryItemRequest itineraryItemRequest) {
+        try {
+            ItineraryItem updatedItineraryItem = itineraryItemService
+                    .updateItineraryItem(itineraryItemId, itineraryItemRequest);
+            return ResponseEntity.ok(updatedItineraryItem);
+        } catch (ItineraryItemNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update itinerary item.");
+        }
+    }
+
+
 
 
 }

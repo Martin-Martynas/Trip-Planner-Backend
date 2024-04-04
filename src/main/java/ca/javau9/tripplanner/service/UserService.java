@@ -1,6 +1,6 @@
 package ca.javau9.tripplanner.service;
 
-import ca.javau9.tripplanner.dto.UserRegistrationRequest;
+import ca.javau9.tripplanner.dto.UserRegOrUpdRequest;
 import ca.javau9.tripplanner.exception.EmailAlreadyRegisteredException;
 import ca.javau9.tripplanner.exception.UserNotFoundException;
 import ca.javau9.tripplanner.exception.UsernameAlreadyExistsException;
@@ -21,7 +21,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public void registerUser(UserRegistrationRequest userRequest) {
+    public void registerUser(UserRegOrUpdRequest userRequest) {
 
         if (userRepository.existsByUsername(userRequest.getUsername())) {
             throw new UsernameAlreadyExistsException("Username is already taken!");
@@ -56,5 +56,14 @@ public class UserService {
             throw new UserNotFoundException("User not found with Username: " + idOrUsername);
         }
 
+    }
+
+    public UserEntity updateUserProfile(Long userId, UserRegOrUpdRequest userRegOrUpdRequest) {
+        UserEntity existingUser = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
+        existingUser.setUsername(userRegOrUpdRequest.getUsername());
+        existingUser.setEmail(userRegOrUpdRequest.getEmail());
+        existingUser.setPassword(userRegOrUpdRequest.getPassword());
+        return userRepository.save(existingUser);
     }
 }

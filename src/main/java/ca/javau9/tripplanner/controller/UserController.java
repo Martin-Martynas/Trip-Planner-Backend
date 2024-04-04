@@ -1,6 +1,6 @@
 package ca.javau9.tripplanner.controller;
 
-import ca.javau9.tripplanner.dto.UserRegistrationRequest;
+import ca.javau9.tripplanner.dto.UserRegOrUpdRequest;
 import ca.javau9.tripplanner.exception.EmailAlreadyRegisteredException;
 import ca.javau9.tripplanner.exception.UserNotFoundException;
 import ca.javau9.tripplanner.exception.UsernameAlreadyExistsException;
@@ -24,7 +24,7 @@ public class UserController {
     }
 
     @RequestMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody UserRegistrationRequest userRequest) {
+    public ResponseEntity<String> registerUser(@RequestBody UserRegOrUpdRequest userRequest) {
         try{
             userService.registerUser(userRequest);
             return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully!");
@@ -49,6 +49,19 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to retrieve user details.");
+        }
+    }
+
+    @PutMapping("/{userId}")
+    public ResponseEntity<?> updateUserProfile(@PathVariable Long userId, /*@Valid*/
+                                               @RequestBody UserRegOrUpdRequest userRegOrUpdRequest) {
+        try {
+            UserEntity updatedUserEntity = userService.updateUserProfile(userId, userRegOrUpdRequest);
+            return ResponseEntity.ok(updatedUserEntity);
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update user profile.");
         }
     }
 

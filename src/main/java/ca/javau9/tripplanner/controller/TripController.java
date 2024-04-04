@@ -41,6 +41,22 @@ public class TripController {
         }
     }
 
+    @PutMapping("/{tripId}")
+    public ResponseEntity<?> updateTripDetails(@PathVariable Long tripId, /*@Valid*/
+                                               @RequestBody TripRequest tripRequest) {
+        try {
+            Trip updatedTrip = tripService.updateTripDetails(tripId, tripRequest);
+            return ResponseEntity.ok(updatedTrip);
+        } catch (TripNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update trip details.");
+        }
+    }
+
+
+
+
 
 
 

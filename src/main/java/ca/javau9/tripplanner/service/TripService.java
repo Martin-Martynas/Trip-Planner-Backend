@@ -37,4 +37,14 @@ public class TripService {
             throw new TripNotFoundException("Trip not found with ID: " + tripId);
         }
     }
+
+    public Trip updateTripDetails(Long tripId, TripRequest tripRequest) {
+        Trip existingTrip = tripRepository.findById(tripId)
+                .orElseThrow(() -> new TripNotFoundException("Trip not found with ID: " + tripId));
+        existingTrip.setDestination(tripRequest.getDestination());
+        existingTrip.setStartDate(tripRequest.getStartDate());
+        existingTrip.setEndDate(tripRequest.getEndDate());
+        existingTrip.setBudget(tripRequest.getBudget());
+        return tripRepository.save(existingTrip);
+    }
 }

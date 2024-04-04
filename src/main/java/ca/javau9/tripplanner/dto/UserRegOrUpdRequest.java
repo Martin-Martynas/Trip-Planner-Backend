@@ -1,12 +1,12 @@
 package ca.javau9.tripplanner.dto;
 
-public class UserRegistrationRequest {
+public class UserRegOrUpdRequest {
     private String username;
     private String email;
     private String password;
-    public UserRegistrationRequest() {}
+    public UserRegOrUpdRequest() {}
 
-    public UserRegistrationRequest(String username, String email, String password) {
+    public UserRegOrUpdRequest(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;

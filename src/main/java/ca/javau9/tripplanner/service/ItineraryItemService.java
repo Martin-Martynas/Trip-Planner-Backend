@@ -42,4 +42,15 @@ public class ItineraryItemService {
             throw new ItineraryItemNotFoundException("Itinerary item not found with ID: " + id);
         }
     }
+
+    public ItineraryItem updateItineraryItem(Long itineraryItemId, ItineraryItemRequest itineraryItemRequest) {
+        ItineraryItem existingItineraryItem = itineraryItemRepository.findById(itineraryItemId)
+                .orElseThrow(() -> new ItineraryItemNotFoundException("Itinerary item not found with ID: "
+                        + itineraryItemId));
+        existingItineraryItem.setTripDate(itineraryItemRequest.getTripDate());
+        existingItineraryItem.setActivityTime(itineraryItemRequest.getActivityTime());
+        existingItineraryItem.setActivity(itineraryItemRequest.getActivity());
+        existingItineraryItem.setNotes(itineraryItemRequest.getNotes());
+        return itineraryItemRepository.save(existingItineraryItem);
+    }
 }
