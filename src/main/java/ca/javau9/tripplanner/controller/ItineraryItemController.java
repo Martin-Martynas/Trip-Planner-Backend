@@ -70,6 +70,22 @@ public class ItineraryItemController {
         }
     }
 
+    @DeleteMapping("/{itineraryItemId}")
+    public ResponseEntity<?> deleteItineraryItem(@PathVariable Long itineraryItemId /*, Authentication authentication*/)
+    {
+        try {
+            /*String username = authentication.getName();*/
+            itineraryItemService.deleteItineraryItem(itineraryItemId /*, username*/);
+            return ResponseEntity.ok("Itinerary item deleted successfully.");
+        } catch (ItineraryItemNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } /*catch (UnauthorizedAccessException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }*/ catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete itinerary item.");
+        }
+    }
+
 
 
 

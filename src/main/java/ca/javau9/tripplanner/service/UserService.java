@@ -5,6 +5,8 @@ import ca.javau9.tripplanner.exception.EmailAlreadyRegisteredException;
 import ca.javau9.tripplanner.exception.UserNotFoundException;
 import ca.javau9.tripplanner.exception.UsernameAlreadyExistsException;
 import ca.javau9.tripplanner.models.UserEntity;
+import ca.javau9.tripplanner.repository.ItineraryItemRepository;
+import ca.javau9.tripplanner.repository.TripRepository;
 import ca.javau9.tripplanner.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,10 +17,15 @@ import java.util.Optional;
 public class UserService {
     UserRepository userRepository;
     //private PasswordEncoder passwordEncoder;
+    TripRepository tripRepository;
+    ItineraryItemRepository itineraryItemRepository;
 
     @Autowired
-    public UserService (UserRepository userRepository) {
+    public UserService (UserRepository userRepository, TripRepository tripRepository,
+                        ItineraryItemRepository itineraryItemRepository) {
         this.userRepository = userRepository;
+        this.tripRepository = tripRepository;
+        this.itineraryItemRepository = itineraryItemRepository;
     }
 
     public void registerUser(UserRegOrUpdRequest userRequest) {
@@ -65,5 +72,15 @@ public class UserService {
         existingUser.setEmail(userRegOrUpdRequest.getEmail());
         existingUser.setPassword(userRegOrUpdRequest.getPassword());
         return userRepository.save(existingUser);
+    }
+
+    public void deleteUserAccount(Long userId) {
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
+
+        tripRepository.deleteByUser(userEntity);
+        itineraryItemRepository.deleteByTripUser(userEntity);
+
+        userRepository.delete(userEntity);
     }
 }

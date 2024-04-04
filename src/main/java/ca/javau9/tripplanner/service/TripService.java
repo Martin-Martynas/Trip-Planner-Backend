@@ -2,9 +2,8 @@ package ca.javau9.tripplanner.service;
 
 import ca.javau9.tripplanner.dto.TripRequest;
 import ca.javau9.tripplanner.exception.TripNotFoundException;
-import ca.javau9.tripplanner.exception.UserNotFoundException;
 import ca.javau9.tripplanner.models.Trip;
-import ca.javau9.tripplanner.models.UserEntity;
+import ca.javau9.tripplanner.repository.ItineraryItemRepository;
 import ca.javau9.tripplanner.repository.TripRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -12,10 +11,12 @@ import java.util.Optional;
 
 public class TripService {
     TripRepository tripRepository;
+    ItineraryItemRepository itineraryItemRepository;
 
     @Autowired
-    public TripService (TripRepository tripRepository) {
+    public TripService (TripRepository tripRepository, ItineraryItemRepository itineraryItemRepository) {
         this.tripRepository = tripRepository;
+        this.itineraryItemRepository = itineraryItemRepository;
     }
 
     public Trip createTrip(TripRequest tripRequest) {
@@ -46,5 +47,16 @@ public class TripService {
         existingTrip.setEndDate(tripRequest.getEndDate());
         existingTrip.setBudget(tripRequest.getBudget());
         return tripRepository.save(existingTrip);
+    }
+
+    public void deleteTrip(Long tripId /*, String username*/) {
+        Trip trip = tripRepository.findById(tripId)
+                .orElseThrow(() -> new TripNotFoundException("Trip not found with ID: " + tripId));
+       /* if (!trip.getUserEntity().getUsername().equals(username)) {
+            throw new UnauthorizedAccessException("You are not authorized to delete this trip.");
+        }*/
+        itineraryItemRepository.deleteByTrip(trip);
+
+        tripRepository.delete(trip);
     }
 }

@@ -53,4 +53,14 @@ public class ItineraryItemService {
         existingItineraryItem.setNotes(itineraryItemRequest.getNotes());
         return itineraryItemRepository.save(existingItineraryItem);
     }
+
+    public void deleteItineraryItem(Long itineraryItemId /*, String username*/) {
+        ItineraryItem itineraryItem = itineraryItemRepository.findById(itineraryItemId)
+                .orElseThrow(() -> new ItineraryItemNotFoundException("Itinerary item not found with ID: "
+                        + itineraryItemId));
+       /* if (!itineraryItem.getTrip().getUserEntity().getUsername().equals(username)) {
+            throw new UnauthorizedAccessException("You are not authorized to delete this itinerary item.");
+        }*/
+        itineraryItemRepository.delete(itineraryItem);
+    }
 }

@@ -65,6 +65,18 @@ public class UserController {
         }
     }
 
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<?> deleteUserAccount(@PathVariable Long userId) {
+        try {
+            userService.deleteUserAccount(userId);
+            return ResponseEntity.ok("User account deleted successfully.");
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete user account.");
+        }
+    }
+
 
 
 
