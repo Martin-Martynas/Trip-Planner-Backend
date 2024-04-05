@@ -27,7 +27,7 @@ public class Trip {
     @JoinColumn(name="userEntity_id")
     @JsonBackReference
     private UserEntity userEntity;
-    @OneToMany(mappedBy = "trip", cascade = CascadeType.PERSIST )
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL )
     @JsonManagedReference
     private List<ItineraryItem> itineraryItems;
 

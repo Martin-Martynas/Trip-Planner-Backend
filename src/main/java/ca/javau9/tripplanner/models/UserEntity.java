@@ -20,7 +20,7 @@ public class UserEntity {
     private LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.PERSIST )
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL )
     @JsonManagedReference
     private List<Trip> trips;
 

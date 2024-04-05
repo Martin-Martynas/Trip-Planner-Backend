@@ -31,7 +31,7 @@ public class MyStarter implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        seedDummyData();
+        //seedDummyData();
     }
 
     private void seedDummyData() {

@@ -28,6 +28,8 @@ public class TripService {
         trip.setEndDate(tripRequest.getEndDate());
         trip.setBudget(tripRequest.getBudget());
 
+        //trip has to be assigned to the user
+
         return tripRepository.save(trip);
 
     }
