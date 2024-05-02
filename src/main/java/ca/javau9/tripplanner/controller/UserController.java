@@ -4,12 +4,16 @@ import ca.javau9.tripplanner.dto.UserRegOrUpdRequest;
 import ca.javau9.tripplanner.exception.EmailAlreadyRegisteredException;
 import ca.javau9.tripplanner.exception.UserNotFoundException;
 import ca.javau9.tripplanner.exception.UsernameAlreadyExistsException;
+import ca.javau9.tripplanner.models.UserDto;
 import ca.javau9.tripplanner.models.UserEntity;
 import ca.javau9.tripplanner.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -76,6 +80,45 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete user account.");
         }
+    }
+
+
+
+    @PostMapping("/")
+    public ResponseEntity<UserDto>  createUser(@RequestBody UserDto userDto) {
+        UserDto createdUser = userService.createUser(userDto);
+        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/")
+    public ResponseEntity<List<UserDto>> getAllUsers(){
+        List<UserDto> users = userService.getAllUsers();
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDto> getUserById(@PathVariable Long id){
+        Optional<UserDto> userInBox = userService.getUserByIdDto(id);
+        return userInBox
+                .map( ResponseEntity::ok )
+                .orElseGet( () -> ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserDto> updateUser(
+            @PathVariable Long id,
+            @RequestBody UserDto userDto){
+        Optional<UserDto> userInBox = userService.updateUser(id, userDto);
+
+        return userInBox
+                .map( ResponseEntity::ok )
+                .orElseGet( () -> ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id){
+        userService.deleteUser(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 

@@ -24,7 +24,7 @@ public class Trip {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
     @ManyToOne
-    @JoinColumn(name="userEntity_id")
+    @JoinColumn(name="user_id")
     @JsonBackReference
     private UserEntity userEntity;
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL )

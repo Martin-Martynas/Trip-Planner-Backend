@@ -6,9 +6,12 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
+@Table(name = "users")
 public class UserEntity {
     @Id
     @GeneratedValue
@@ -24,22 +27,28 @@ public class UserEntity {
     @JsonManagedReference
     private List<Trip> trips;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(  name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
+
     public UserEntity () {}
 
-    public UserEntity(Long id, String username, String email, String password, LocalDateTime createdAt,
+    public UserEntity(String username, String email, String password ) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
+
+    public UserEntity(String username, String email, String password, LocalDateTime createdAt,
                       LocalDateTime updatedAt, List<Trip> trips) {
-        this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.trips = trips;
-    }
-    public UserEntity(String username, String email, String password ) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
     }
 
     @Override
@@ -56,6 +65,14 @@ public class UserEntity {
     }
 
     //<editor-fold desc="getter and setter">
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
 
     public Long getId() {
         return id;
