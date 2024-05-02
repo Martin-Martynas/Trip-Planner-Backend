@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 
 @RestController
+@CrossOrigin
 @RequestMapping("api/trips")
 public class TripController {
     TripService tripService;
