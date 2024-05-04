@@ -3,22 +3,33 @@ package ca.javau9.tripplanner.service;
 import ca.javau9.tripplanner.dto.TripRequest;
 import ca.javau9.tripplanner.exception.TripNotFoundException;
 import ca.javau9.tripplanner.models.Trip;
+import ca.javau9.tripplanner.models.TripDto;
+import ca.javau9.tripplanner.models.UserEntity;
 import ca.javau9.tripplanner.repository.ItineraryItemRepository;
 import ca.javau9.tripplanner.repository.TripRepository;
+import ca.javau9.tripplanner.utils.EntityMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class TripService {
-    TripRepository tripRepository;
+    private final TripRepository tripRepository;
     ItineraryItemRepository itineraryItemRepository;
+    UserService userService;
+    private final EntityMapper entityMapper;
+
+
 
     @Autowired
-    public TripService (TripRepository tripRepository, ItineraryItemRepository itineraryItemRepository) {
+    public TripService (TripRepository tripRepository, ItineraryItemRepository itineraryItemRepository,
+                        UserService userService, EntityMapper entityMapper) {
         this.tripRepository = tripRepository;
         this.itineraryItemRepository = itineraryItemRepository;
+        this.userService = userService;
+        this.entityMapper = entityMapper;
     }
 
     public Trip createTrip(TripRequest tripRequest) {
@@ -62,5 +73,13 @@ public class TripService {
         itineraryItemRepository.deleteByTrip(trip);
 
         tripRepository.delete(trip);
+    }
+
+    public List<TripDto> getTripDtosByUsername(String username) {
+        UserEntity userEntity = userService.getUserByUsername(username);
+        List<Trip> trips = userEntity.getTrips();
+        return trips.stream()
+                .map(entityMapper::toTripDto)
+                .toList();
     }
 }

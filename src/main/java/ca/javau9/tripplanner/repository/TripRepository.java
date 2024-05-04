@@ -11,4 +11,5 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
     @Transactional
     void deleteByUserEntity(UserEntity userEntity);
 
+
 }

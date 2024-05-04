@@ -1,5 +1,6 @@
 package ca.javau9.tripplanner.security.jwt;
 
+import ca.javau9.tripplanner.exception.JwtAuthenticationException;
 import ca.javau9.tripplanner.security.JwtUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -33,6 +34,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         try {
+            logger.debug("Incoming request: {}", request.getRequestURI());
+
             String jwt = parseJwt(request);
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
                 String username = jwtUtils.getUserNameFromJwtToken(jwt);
@@ -46,9 +49,13 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                logger.info("User '{}' successfully authenticated", username);
+
+
             }
-        } catch (Exception e) {
-            logger.error("Cannot set user authentication: {}", e);
+        } catch (Exception | JwtAuthenticationException e) {
+            logger.error("Cannot set user authentication: {}", e.getMessage());
         }
 
         filterChain.doFilter(request, response);

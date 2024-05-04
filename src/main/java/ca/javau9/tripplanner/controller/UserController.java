@@ -38,7 +38,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/{idOrUsername}")
+    @GetMapping("/details/{idOrUsername}")
     public ResponseEntity<?> getUserDetails(@PathVariable String idOrUsername) {
         try {
             try {
