@@ -27,7 +27,7 @@ public class Trip {
     @JoinColumn(name="user_id")
     @JsonBackReference
     private UserEntity userEntity;
-    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL )
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, fetch = FetchType.EAGER )
     @JsonManagedReference
     private List<ItineraryItem> itineraryItems;
 
@@ -62,7 +62,6 @@ public class Trip {
                 ", budget=" + budget +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
-                ", userEntity=" + userEntity +
                 ", itineraryItem=" + itineraryItems +
                 '}';
     }

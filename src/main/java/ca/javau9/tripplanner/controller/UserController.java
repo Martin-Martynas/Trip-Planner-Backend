@@ -43,7 +43,7 @@ public class UserController {
         try {
             try {
                 Long userEntityId = Long.parseLong(idOrUsername);
-                UserEntity userEntity = userService.getUserById(userEntityId);
+                UserEntity userEntity = userService.getUserById_(userEntityId);
                 return ResponseEntity.ok(userEntity);
             } catch (NumberFormatException e) {
 
@@ -98,7 +98,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable Long id){
-        Optional<UserDto> userInBox = userService.getUserByIdDto(id);
+        Optional<UserDto> userInBox = userService.getUserById(id);
         return userInBox
                 .map( ResponseEntity::ok )
                 .orElseGet( () -> ResponseEntity.notFound().build());

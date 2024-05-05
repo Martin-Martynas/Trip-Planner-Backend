@@ -56,7 +56,7 @@ public class UserService implements UserDetailsService {
                 .map(entityMapper::toUserDto)
                 .toList();
     }
-    public Optional<UserDto> getUserByIdDto(Long id) {
+    public Optional<UserDto> getUserById(Long id) {
         Optional<UserEntity> user = userRepository.findById(id);
 
         return user.map(entityMapper::toUserDto);
@@ -114,7 +114,7 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public UserEntity getUserById(Long userEntityId) {
+    public UserEntity getUserById_(Long userEntityId) {
         Optional<UserEntity> box = userRepository.findById(userEntityId);
         if(box.isPresent()) {
             return box.get();

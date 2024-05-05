@@ -33,9 +33,10 @@ public class TripController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createTrip(@RequestBody TripRequest tripRequest) {
+    public ResponseEntity<?> createTrip(@RequestBody TripDto tripDto, HttpServletRequest request) {
         try {
-            Trip createdTrip = tripService.createTrip(tripRequest);
+            String username = jwtUtils.extractUsernameFromToken(request);
+            TripDto createdTrip = tripService.createTrip(tripDto, username);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdTrip);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create trip.");
@@ -55,6 +56,25 @@ public class TripController {
     }*/
 
     @GetMapping("/{tripId}")
+    public ResponseEntity<?> getTripDetails(@PathVariable Long tripId, HttpServletRequest request) {
+        try {
+            String username = jwtUtils.extractUsernameFromToken(request);
+            TripDto trip = tripService.getTripDtoById(tripId);
+
+            if (!trip.getCreatedBy().equals(username)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("You do not have permission to access this trip.");
+            }
+            return ResponseEntity.ok(trip);
+        } catch (TripNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to retrieve trip details.");
+        }
+    }
+
+
+    /*@GetMapping("/{tripId}")
     public ResponseEntity<?> getTripDetails(@PathVariable Long tripId) {
         try {
             Trip trip = tripService.getTripById(tripId);
@@ -64,7 +84,9 @@ public class TripController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to retrieve trip details.");
         }
-    }
+    }*/
+
+
 
     @PutMapping("/{tripId}")
     public ResponseEntity<?> updateTripDetails(@PathVariable Long tripId, /*@Valid*/

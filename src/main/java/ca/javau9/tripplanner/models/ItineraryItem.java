@@ -18,6 +18,7 @@ public class ItineraryItem {
     private LocalTime activityTime;
     private String activity;
     private String notes;
+    private Integer cost;
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp
@@ -30,12 +31,13 @@ public class ItineraryItem {
     public ItineraryItem () {}
 
     public ItineraryItem(Long id, LocalDate tripDate, LocalTime activityTime, String activity, String notes,
-                         LocalDateTime createdAt, LocalDateTime updatedAt, Trip trip) {
+                         Integer cost, LocalDateTime createdAt, LocalDateTime updatedAt, Trip trip) {
         this.id = id;
         this.tripDate = tripDate;
         this.activityTime = activityTime;
         this.activity = activity;
         this.notes = notes;
+        this.cost = cost;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.trip = trip;
@@ -56,9 +58,10 @@ public class ItineraryItem {
                 ", activityTime=" + activityTime +
                 ", activity='" + activity + '\'' +
                 ", notes='" + notes + '\'' +
+                ", cost=" + cost +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
-                ", trip=" + trip +
+
                 '}';
     }
 
@@ -126,5 +129,14 @@ public class ItineraryItem {
     public void setTrip(Trip trip) {
         this.trip = trip;
     }
+
+    public Integer getCost() {
+        return cost;
+    }
+
+    public void setCost(Integer cost) {
+        this.cost = cost;
+    }
+
     //</editor-fold>
 }

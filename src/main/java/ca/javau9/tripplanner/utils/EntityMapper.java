@@ -1,10 +1,10 @@
 package ca.javau9.tripplanner.utils;
 
-import ca.javau9.tripplanner.models.Trip;
-import ca.javau9.tripplanner.models.TripDto;
-import ca.javau9.tripplanner.models.UserDto;
-import ca.javau9.tripplanner.models.UserEntity;
+import ca.javau9.tripplanner.models.*;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class EntityMapper {
@@ -29,7 +29,7 @@ public class EntityMapper {
         );
     }
 
-    //Long id, String destination, LocalDate startDate, LocalDate endDate, Double budget
+    //Long id, String destination, LocalDate startDate, LocalDate endDate, Double budget, Strin createdBy
 
     public TripDto toTripDto(Trip trip) {
         TripDto tripDto = new TripDto();
@@ -38,6 +38,8 @@ public class EntityMapper {
         tripDto.setStartDate(trip.getStartDate());
         tripDto.setEndDate(trip.getEndDate());
         tripDto.setBudget(trip.getBudget());
+        tripDto.setCreatedBy(trip.getUserEntity().getUsername());
+        tripDto.setItineraryItemDtos(toItineraryItemDtos(trip.getItineraryItems()));
         return tripDto;
     }
 
@@ -50,4 +52,41 @@ public class EntityMapper {
         trip.setBudget(tripDto.getBudget());
         return trip;
     }
+
+    //Long id, LocalDate tripDate, LocalTime activityTime, String activity, String notes,
+    //                         LocalDateTime createdAt, LocalDateTime updatedAt, Trip trip
+
+    public ItineraryItem toItineraryItem(ItineraryItemDto itineraryItemDto) {
+        ItineraryItem itineraryItem = new ItineraryItem();
+        itineraryItem.setTripDate(itineraryItemDto.getTripDate());
+        itineraryItem.setActivityTime(itineraryItemDto.getActivityTime());
+        itineraryItem.setActivity(itineraryItemDto.getActivity());
+        itineraryItem.setNotes(itineraryItemDto.getNotes());
+        itineraryItem.setCost(itineraryItemDto.getCost());
+        return itineraryItem;
+    }
+
+    //Long id, LocalDate tripDate, LocalTime activityTime, String activity, Integer cost,String notes
+    public ItineraryItemDto toItineraryItemDto(ItineraryItem itineraryItem) {
+        return new ItineraryItemDto(
+                itineraryItem.getId(),
+                itineraryItem.getTripDate(),
+                itineraryItem.getActivityTime(),
+                itineraryItem.getActivity(),
+                itineraryItem.getCost(),
+                itineraryItem.getNotes()
+        );
+    }
+
+    public List<ItineraryItemDto> toItineraryItemDtos(List<ItineraryItem> itineraryItems) {
+        List <ItineraryItemDto> itineraryItemDtos = new ArrayList<>();
+        for (ItineraryItem itineraryItem: itineraryItems) {
+            ItineraryItemDto itineraryItemDto = toItineraryItemDto(itineraryItem);
+            itineraryItemDtos.add(itineraryItemDto);
+        }
+        return itineraryItemDtos;
+    }
+
+
+
 }

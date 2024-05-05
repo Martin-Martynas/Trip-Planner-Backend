@@ -32,17 +32,27 @@ public class TripService {
         this.entityMapper = entityMapper;
     }
 
-    public Trip createTrip(TripRequest tripRequest) {
-        Trip trip = new Trip();
-        trip.setDestination(tripRequest.getDestination());
-        trip.setStartDate(tripRequest.getStartDate());
-        trip.setEndDate(tripRequest.getEndDate());
-        trip.setBudget(tripRequest.getBudget());
+    public TripDto createTrip(TripDto tripDto, String username) {
 
-        //trip has to be assigned to the user
+        Trip tripBeforeSave = entityMapper.toTrip(tripDto);
 
-        return tripRepository.save(trip);
+        UserEntity user = userService.getUserByUsername(username);
 
+        tripBeforeSave.setUserEntity(user);
+
+        Trip tripAfterSave = tripRepository.save(tripBeforeSave);
+
+        return entityMapper.toTripDto(tripAfterSave);
+
+    }
+
+    public TripDto getTripDtoById(Long tripId) {
+        Optional<Trip> box = tripRepository.findById(tripId);
+        if(box.isPresent()) {
+            return entityMapper.toTripDto(box.get());
+        } else {
+            throw new TripNotFoundException("Trip not found with ID: " + tripId);
+        }
     }
 
     public Trip getTripById(Long tripId) {
@@ -53,6 +63,8 @@ public class TripService {
             throw new TripNotFoundException("Trip not found with ID: " + tripId);
         }
     }
+
+
 
     public Trip updateTripDetails(Long tripId, TripRequest tripRequest) {
         Trip existingTrip = tripRepository.findById(tripId)

@@ -64,7 +64,7 @@ public class AuthService {
 
         String jwt = jwtUtils.generateJwtToken(authentication);
         UserDto userDetails = (UserDto) authentication.getPrincipal();
-        logger.info("Before: " + userDetails.toString());
+       /* logger.info("Before: " + userDetails.toString());*/
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
