@@ -14,4 +14,6 @@ public interface ItineraryItemRepository extends JpaRepository<ItineraryItem, Lo
 
     @Transactional
     void deleteByTrip(Trip trip);
+
+
 }

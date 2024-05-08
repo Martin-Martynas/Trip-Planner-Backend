@@ -88,11 +88,11 @@ public class MyStarter implements CommandLineRunner {
         trip3.setUserEntity(userEntity2);
         trip4.setUserEntity(userEntity2);
 
-        trip1.setItineraryItem(itineraryItems1);
-        trip2.setItineraryItem(itineraryItems2);
+        trip1.setItineraryItems(itineraryItems1);
+        trip2.setItineraryItems(itineraryItems2);
 
-        trip3.setItineraryItem(itineraryItems3);
-        trip4.setItineraryItem(itineraryItems4);
+        trip3.setItineraryItems(itineraryItems3);
+        trip4.setItineraryItems(itineraryItems4);
 
 
         itineraryItem1.setTrip(trip1);

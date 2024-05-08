@@ -14,16 +14,19 @@ import java.util.Set;
 @Table(name = "users")
 public class UserEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false, unique = true)
     private String username;
+    @Column(nullable = false, unique = true)
     private String email;
+    @Column(nullable = false)
     private String password;
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER )
+    @OneToMany(mappedBy = "userEntity", fetch = FetchType.EAGER )
     @JsonManagedReference
     private List<Trip> trips;
 

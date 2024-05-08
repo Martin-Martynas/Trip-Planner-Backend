@@ -1,16 +1,20 @@
 package ca.javau9.tripplanner.service;
 
+import ca.javau9.tripplanner.exception.IncorrectUserException;
+import ca.javau9.tripplanner.exception.UserNotFoundException;
 import ca.javau9.tripplanner.models.ERole;
 import ca.javau9.tripplanner.models.Role;
 import ca.javau9.tripplanner.models.UserDto;
 import ca.javau9.tripplanner.models.UserEntity;
 import ca.javau9.tripplanner.payload.requests.LoginRequest;
 import ca.javau9.tripplanner.payload.requests.SignupRequest;
+import ca.javau9.tripplanner.payload.requests.UpdateRequest;
 import ca.javau9.tripplanner.payload.responses.JwtResponse;
 import ca.javau9.tripplanner.payload.responses.MessageResponse;
 import ca.javau9.tripplanner.repository.RoleRepository;
 import ca.javau9.tripplanner.repository.UserRepository;
 import ca.javau9.tripplanner.security.JwtUtils;
+import ca.javau9.tripplanner.utils.EntityMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -25,6 +29,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -42,16 +47,20 @@ public class AuthService {
 
     JwtUtils jwtUtils;
 
+    EntityMapper entityMapper;
+
     public AuthService (AuthenticationManager authenticationManager,
                         UserRepository userRepository,
                         RoleRepository roleRepository,
                         PasswordEncoder encoder,
-                        JwtUtils jwtUtils) {
+                        JwtUtils jwtUtils,
+                        EntityMapper entityMapper) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.encoder = encoder;
         this.jwtUtils = jwtUtils;
+        this.entityMapper = entityMapper;
     }
 
     public JwtResponse authenticateUser(LoginRequest loginRequest) {
@@ -128,7 +137,40 @@ public class AuthService {
     }
 
 
+    public UserDto updateUser(Long id, UpdateRequest updateRequest, String username ){
 
+        logger.info("Id before repository: {}", id);
+        logger.info("UserDto before repository : {}", updateRequest);
+        logger.info("username before repository: {}", username);
+
+        Optional<UserEntity> userInBox = userRepository.findById(id);
+
+        logger.info("userInBox: {}", userInBox);
+
+        if(userInBox.isEmpty()){
+            throw new UserNotFoundException("User Not Found");
+        }
+        UserEntity user = userInBox.get();
+
+        logger.info("user out of box: {}", user);
+
+        if(user.getUsername().equals(username)) {
+            user.setEmail(updateRequest.getEmail());
+            user.setPassword(encoder.encode(updateRequest.getPassword()));
+
+            logger.info("user after change: {}", user);
+
+            UserEntity userEntityAfterSave = userRepository.save(user);
+            logger.info("userEntityAfterSave : {}", userEntityAfterSave);
+
+            UserDto userDtoForReturn = entityMapper.toUserDto(userEntityAfterSave);
+            logger.info("userDtoForReturn : {}", userDtoForReturn);
+            return userDtoForReturn;
+
+        } else {
+            throw new IncorrectUserException("User id" + id + "does not belong to" + username);
+        }
+    }
 
 
 }

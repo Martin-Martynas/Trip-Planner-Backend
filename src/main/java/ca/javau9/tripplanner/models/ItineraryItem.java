@@ -12,9 +12,9 @@ import java.time.LocalTime;
 @Entity
 public class ItineraryItem {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDate tripDate;
+    private LocalDate itineraryDate;
     private LocalTime activityTime;
     private String activity;
     private String notes;
@@ -23,17 +23,17 @@ public class ItineraryItem {
     private LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="trip_id")
     @JsonBackReference
     private Trip trip;
 
     public ItineraryItem () {}
 
-    public ItineraryItem(Long id, LocalDate tripDate, LocalTime activityTime, String activity, String notes,
+    public ItineraryItem(Long id, LocalDate itineraryDate, LocalTime activityTime, String activity, String notes,
                          Integer cost, LocalDateTime createdAt, LocalDateTime updatedAt, Trip trip) {
         this.id = id;
-        this.tripDate = tripDate;
+        this.itineraryDate = itineraryDate;
         this.activityTime = activityTime;
         this.activity = activity;
         this.notes = notes;
@@ -43,8 +43,8 @@ public class ItineraryItem {
         this.trip = trip;
     }
 
-    public ItineraryItem(LocalDate tripDate, LocalTime activityTime, String activity, String notes) {
-        this.tripDate = tripDate;
+    public ItineraryItem(LocalDate itineraryDate, LocalTime activityTime, String activity, String notes) {
+        this.itineraryDate = itineraryDate;
         this.activityTime = activityTime;
         this.activity = activity;
         this.notes = notes;
@@ -54,14 +54,13 @@ public class ItineraryItem {
     public String toString() {
         return "ItineraryItem{" +
                 "id=" + id +
-                ", tripDate=" + tripDate +
+                ", itineraryDate=" + itineraryDate +
                 ", activityTime=" + activityTime +
                 ", activity='" + activity + '\'' +
                 ", notes='" + notes + '\'' +
                 ", cost=" + cost +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
-
                 '}';
     }
 
@@ -74,12 +73,12 @@ public class ItineraryItem {
         this.id = id;
     }
 
-    public LocalDate getTripDate() {
-        return tripDate;
+    public LocalDate getItineraryDate() {
+        return itineraryDate;
     }
 
-    public void setTripDate(LocalDate tripDate) {
-        this.tripDate = tripDate;
+    public void setItineraryDate(LocalDate itineraryDate) {
+        this.itineraryDate = itineraryDate;
     }
 
     public LocalTime getActivityTime() {

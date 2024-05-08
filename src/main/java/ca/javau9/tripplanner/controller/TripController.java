@@ -4,6 +4,7 @@ import ca.javau9.tripplanner.dto.TripRequest;
 import ca.javau9.tripplanner.exception.TripNotFoundException;
 import ca.javau9.tripplanner.models.Trip;
 import ca.javau9.tripplanner.models.TripDto;
+import ca.javau9.tripplanner.models.UserDto;
 import ca.javau9.tripplanner.security.JwtUtils;
 import ca.javau9.tripplanner.service.TripService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,9 +35,27 @@ public class TripController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createTrip(@RequestBody TripDto tripDto, HttpServletRequest request) {
+
+        // Log request parameters
+        Enumeration<String> parameterNames = request.getParameterNames();
+        while (parameterNames.hasMoreElements()) {
+            String paramName = parameterNames.nextElement();
+            String paramValue = request.getParameter(paramName);
+            logger.info("Request parameter - {} : {}", paramName, paramValue);
+        }
+
+        // Log request headers
+        Enumeration<String> headerNames = request.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String headerName = headerNames.nextElement();
+            String headerValue = request.getHeader(headerName);
+            logger.info("Request header - {} : {}", headerName, headerValue);
+        }
+
         try {
             String username = jwtUtils.extractUsernameFromToken(request);
             TripDto createdTrip = tripService.createTrip(tripDto, username);
+            logger.info("TripDto : {}", createdTrip);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdTrip);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create trip.");
@@ -55,11 +74,12 @@ public class TripController {
         }
     }*/
 
-    @GetMapping("/{tripId}")
-    public ResponseEntity<?> getTripDetails(@PathVariable Long tripId, HttpServletRequest request) {
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getTrip(@PathVariable Long id, HttpServletRequest request) {
+
         try {
             String username = jwtUtils.extractUsernameFromToken(request);
-            TripDto trip = tripService.getTripDtoById(tripId);
+            TripDto trip = tripService.getTripDtoById(id);
 
             if (!trip.getCreatedBy().equals(username)) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
@@ -88,33 +108,49 @@ public class TripController {
 
 
 
-    @PutMapping("/{tripId}")
-    public ResponseEntity<?> updateTripDetails(@PathVariable Long tripId, /*@Valid*/
-                                               @RequestBody TripRequest tripRequest) {
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateTrip(@PathVariable Long id, /*@Valid*/
+                                               @RequestBody TripDto tripDto, HttpServletRequest request) {
         try {
-            Trip updatedTrip = tripService.updateTripDetails(tripId, tripRequest);
+            String username = jwtUtils.extractUsernameFromToken(request);
+            TripDto updatedTrip = tripService.updateTrip(id, tripDto, username);
             return ResponseEntity.ok(updatedTrip);
-        } catch (TripNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update trip details.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
-    @DeleteMapping("/{tripId}")
-    public ResponseEntity<?> deleteTrip(@PathVariable Long tripId /*, Authentication authentication*/) {
-        try {
-            /*String username = authentication.getName();*/
-            /*tripService.deleteTrip(tripId, username);*/
-            tripService.deleteTrip(tripId);
-            return ResponseEntity.ok("Trip deleted successfully.");
-        } catch (TripNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } /*catch (UnauthorizedAccessException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-        }*/ catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete trip.");
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteTrip(@PathVariable Long id, HttpServletRequest request ) {
+
+        Enumeration<String> parameterNames = request.getParameterNames();
+        while (parameterNames.hasMoreElements()) {
+            String paramName = parameterNames.nextElement();
+            String paramValue = request.getParameter(paramName);
+            logger.info("Request parameter - {} : {}", paramName, paramValue);
         }
+
+        // Log request headers
+        Enumeration<String> headerNames = request.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String headerName = headerNames.nextElement();
+            String headerValue = request.getHeader(headerName);
+            logger.info("Request header - {} : {}", headerName, headerValue);
+        }
+
+
+        String username = jwtUtils.extractUsernameFromToken(request);
+
+        logger.info("username : {}", username);
+
+        boolean response = tripService.deleteTrip(id, username);
+
+        logger.info("response : {}", response);
+
+
+        logger.info("username : {}", username);
+        return response ? ResponseEntity.ok().build() :
+                new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/my-trips")

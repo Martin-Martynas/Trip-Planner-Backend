@@ -5,37 +5,41 @@ import java.time.LocalTime;
 
 public class ItineraryItemDto {
     private Long id;
-    private LocalDate tripDate;
+    private LocalDate itineraryDate;
     private LocalTime activityTime;
     private String activity;
     private Integer cost;
     private String notes;
+    private Long tripId;
 
     public ItineraryItemDto() {}
 
-    public ItineraryItemDto(Long id, LocalDate tripDate, LocalTime activityTime, String activity, Integer cost,
-                            String notes) {
+    public ItineraryItemDto(Long id, LocalDate itineraryDate, LocalTime activityTime, String activity, Integer cost,
+                            String notes, Long tripId) {
         this.id = id;
-        this.tripDate = tripDate;
+        this.itineraryDate = itineraryDate;
         this.activityTime = activityTime;
         this.activity = activity;
         this.cost = cost;
         this.notes = notes;
+        this.tripId = tripId;
     }
 
     @Override
     public String toString() {
         return "ItineraryItemDto{" +
                 "id=" + id +
-                ", tripDate=" + tripDate +
+                ", itineraryDate=" + itineraryDate +
                 ", activityTime=" + activityTime +
                 ", activity='" + activity + '\'' +
                 ", cost=" + cost +
                 ", notes='" + notes + '\'' +
+                ", tripId=" + tripId +
                 '}';
     }
 
     //<editor-fold desc="getters and setters">
+
     public Long getId() {
         return id;
     }
@@ -44,12 +48,12 @@ public class ItineraryItemDto {
         this.id = id;
     }
 
-    public LocalDate getTripDate() {
-        return tripDate;
+    public LocalDate getItineraryDate() {
+        return itineraryDate;
     }
 
-    public void setTripDate(LocalDate tripDate) {
-        this.tripDate = tripDate;
+    public void setItineraryDate(LocalDate itineraryDate) {
+        this.itineraryDate = itineraryDate;
     }
 
     public LocalTime getActivityTime() {
@@ -68,6 +72,14 @@ public class ItineraryItemDto {
         this.activity = activity;
     }
 
+    public Integer getCost() {
+        return cost;
+    }
+
+    public void setCost(Integer cost) {
+        this.cost = cost;
+    }
+
     public String getNotes() {
         return notes;
     }
@@ -76,12 +88,12 @@ public class ItineraryItemDto {
         this.notes = notes;
     }
 
-    public Integer getCost() {
-        return cost;
+    public Long getTripId() {
+        return tripId;
     }
 
-    public void setCost(Integer cost) {
-        this.cost = cost;
+    public void setTripId(Long tripId) {
+        this.tripId = tripId;
     }
 
     //</editor-fold>

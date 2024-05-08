@@ -4,7 +4,10 @@ import ca.javau9.tripplanner.dto.ItineraryItemRequest;
 import ca.javau9.tripplanner.exception.ItineraryItemNotFoundException;
 import ca.javau9.tripplanner.exception.TripNotFoundException;
 import ca.javau9.tripplanner.models.ItineraryItem;
+import ca.javau9.tripplanner.models.ItineraryItemDto;
+import ca.javau9.tripplanner.security.JwtUtils;
 import ca.javau9.tripplanner.service.ItineraryItemService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,15 +20,19 @@ import java.util.List;
 @RequestMapping("/api/itinerary-items")
 public class ItineraryItemController {
     ItineraryItemService itineraryItemService;
+    JwtUtils jwtUtils;
 
     @Autowired
-    public ItineraryItemController(ItineraryItemService itineraryItemService) {
+    public ItineraryItemController(ItineraryItemService itineraryItemService, JwtUtils jwtUtils) {
         this.itineraryItemService = itineraryItemService;
+        this.jwtUtils = jwtUtils;
     }
     @PostMapping("/create")
-    public ResponseEntity<?> createItineraryItem(@RequestBody ItineraryItemRequest itineraryItemRequest) {
+    public ResponseEntity<?> createItineraryItem(@RequestBody ItineraryItemDto itineraryItemDto,
+                                                 HttpServletRequest request) {
         try {
-            ItineraryItem createdItem = itineraryItemService.createItineraryItem(itineraryItemRequest);
+            String username = jwtUtils.extractUsernameFromToken(request);
+            ItineraryItemDto createdItem = itineraryItemService.createItineraryItem(itineraryItemDto, username);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create itinerary item.");
@@ -33,19 +40,17 @@ public class ItineraryItemController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getItineraryItemById(@PathVariable Long id) {
+    public ResponseEntity<?> getItineraryItemById(@PathVariable Long id, HttpServletRequest request) {
         try {
-            ItineraryItem itineraryItem = itineraryItemService.getItineraryItemById(id);
-            return ResponseEntity.ok(itineraryItem);
-        } catch (ItineraryItemNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            String username = jwtUtils.extractUsernameFromToken(request);
+            ItineraryItemDto itemDto = itineraryItemService.getItineraryItemById(id, username);
+            return ResponseEntity.ok(itemDto);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to retrieve itinerary item details.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
-    @GetMapping("/trip/{tripId}")
+    /*@GetMapping("/trip/{tripId}")
     public ResponseEntity<?> getItineraryItemsForTrip(@PathVariable Long tripId) {
         try {
             List<ItineraryItem> itineraryItems = itineraryItemService.getItineraryItemsForTrip(tripId);
@@ -55,36 +60,26 @@ public class ItineraryItemController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to retrieve itinerary items.");
         }
-    }
+    }*/
 
     @PutMapping("/{itineraryItemId}")
-    public ResponseEntity<?> updateItineraryItem(@PathVariable Long itineraryItemId, /*@Valid*/
-                                                 @RequestBody ItineraryItemRequest itineraryItemRequest) {
+    public ResponseEntity<?> updateItineraryItem(@PathVariable Long id, /*@Valid*/
+                                                 @RequestBody ItineraryItemDto itemDto, HttpServletRequest request) {
         try {
-            ItineraryItem updatedItineraryItem = itineraryItemService
-                    .updateItineraryItem(itineraryItemId, itineraryItemRequest);
-            return ResponseEntity.ok(updatedItineraryItem);
-        } catch (ItineraryItemNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            String username = jwtUtils.extractUsernameFromToken(request);
+            ItineraryItemDto updatedItem = itineraryItemService
+                    .updateItineraryItem(id, itemDto, username);
+            return ResponseEntity.ok(updatedItem);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update itinerary item.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
-    @DeleteMapping("/{itineraryItemId}")
-    public ResponseEntity<?> deleteItineraryItem(@PathVariable Long itineraryItemId /*, Authentication authentication*/)
-    {
-        try {
-            /*String username = authentication.getName();*/
-            itineraryItemService.deleteItineraryItem(itineraryItemId /*, username*/);
-            return ResponseEntity.ok("Itinerary item deleted successfully.");
-        } catch (ItineraryItemNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } /*catch (UnauthorizedAccessException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-        }*/ catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete itinerary item.");
-        }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteItineraryItem(@PathVariable Long id, HttpServletRequest request) {
+        String username = jwtUtils.extractUsernameFromToken(request);
+        return  itineraryItemService.deleteItineraryItem(id, username) ? ResponseEntity.ok().build() :
+                new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 

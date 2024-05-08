@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 public class Trip {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String destination;
     private LocalDate startDate;
@@ -23,18 +23,19 @@ public class Trip {
     private LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id")
     @JsonBackReference
     private UserEntity userEntity;
-    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, fetch = FetchType.EAGER )
+    @OneToMany(mappedBy = "trip", fetch = FetchType.EAGER )
     @JsonManagedReference
     private List<ItineraryItem> itineraryItems;
 
     public Trip() {}
 
     public Trip(Long id, String destination, LocalDate startDate, LocalDate endDate, Double budget,
-                LocalDateTime createdAt, LocalDateTime updatedAt, UserEntity userEntity, List<ItineraryItem> itineraryItem) {
+                LocalDateTime createdAt, LocalDateTime updatedAt, UserEntity userEntity,
+                List<ItineraryItem> itineraryItems) {
         this.id = id;
         this.destination = destination;
         this.startDate = startDate;
@@ -43,7 +44,7 @@ public class Trip {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.userEntity = userEntity;
-        this.itineraryItems = itineraryItem;
+        this.itineraryItems = itineraryItems;
     }
     public Trip(String destination, LocalDate startDate, LocalDate endDate, Double budget) {
         this.destination = destination;
@@ -62,7 +63,7 @@ public class Trip {
                 ", budget=" + budget +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
-                ", itineraryItem=" + itineraryItems +
+                ", itineraryItems=" + itineraryItems +
                 '}';
     }
 
@@ -136,7 +137,7 @@ public class Trip {
         return itineraryItems;
     }
 
-    public void setItineraryItem(List<ItineraryItem> itineraryItems) {
+    public void setItineraryItems(List<ItineraryItem> itineraryItems) {
         this.itineraryItems = itineraryItems;
     }
 
