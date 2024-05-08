@@ -1,11 +1,8 @@
 package ca.javau9.tripplanner.payload.requests;
 
-import java.util.Set;
 
 public class UpdateRequest {
-
     private String email;
-
     private String password;
 
     public String getEmail() {

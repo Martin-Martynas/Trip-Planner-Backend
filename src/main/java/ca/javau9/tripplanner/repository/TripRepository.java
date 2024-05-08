@@ -11,10 +11,4 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
     @Transactional
     void deleteByUserEntity(UserEntity userEntity);
 
-    @Transactional
-    Boolean deleteTripById(Long id);
-
-    @Transactional
-    @Override
-    void deleteById(Long aLong);
 }

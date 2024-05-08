@@ -16,18 +16,13 @@ public class UserDto implements UserDetails {
     private Long id;
     private String username;
     private String email;
-
     private Set<Role> roles;
 
     @JsonIgnore
     private String password; //One way road
     public UserDto() {}
 
-    public UserDto(Long id, String username, String email) {
-        this.id = id;
-        this.username = username;
-        this.email = email;
-    }
+
     public UserDto(Long id, String username, String email, String password, Set<Role> roles) {
         this.id = id;
         this.username = username;
@@ -35,11 +30,7 @@ public class UserDto implements UserDetails {
         this.password = password;
         this.roles = roles;
     }
-    public UserDto(String username, String email, String password) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-    }
+
     public Long getId() {
         return id;
     }

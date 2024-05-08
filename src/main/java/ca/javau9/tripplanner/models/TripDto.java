@@ -14,41 +14,6 @@ public class TripDto {
 
     public TripDto(){}
 
-    public TripDto(Long id, String destination, LocalDate startDate, LocalDate endDate) {
-        this.id = id;
-        this.destination = destination;
-        this.startDate = startDate;
-        this.endDate = endDate;
-    }
-
-    public TripDto(Long id, String destination, LocalDate startDate, LocalDate endDate, Double budget) {
-        this.id = id;
-        this.destination = destination;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.budget = budget;
-    }
-
-    public TripDto(Long id, String destination, LocalDate startDate, LocalDate endDate, Double budget,
-                   String createdBy) {
-        this.id = id;
-        this.destination = destination;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.budget = budget;
-        this.createdBy = createdBy;
-    }
-
-    public TripDto(Long id, String destination, LocalDate startDate, LocalDate endDate, Double budget,
-                   String createdBy, List<ItineraryItemDto> itineraryItemDtos) {
-        this.id = id;
-        this.destination = destination;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.budget = budget;
-        this.createdBy = createdBy;
-        this.itineraryItemDtos = itineraryItemDtos;
-    }
 
     @Override
     public String toString() {

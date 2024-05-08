@@ -33,19 +33,6 @@ public class Trip {
 
     public Trip() {}
 
-    public Trip(Long id, String destination, LocalDate startDate, LocalDate endDate, Double budget,
-                LocalDateTime createdAt, LocalDateTime updatedAt, UserEntity userEntity,
-                List<ItineraryItem> itineraryItems) {
-        this.id = id;
-        this.destination = destination;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.budget = budget;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.userEntity = userEntity;
-        this.itineraryItems = itineraryItems;
-    }
     public Trip(String destination, LocalDate startDate, LocalDate endDate, Double budget) {
         this.destination = destination;
         this.startDate = startDate;

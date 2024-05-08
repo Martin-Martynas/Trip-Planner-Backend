@@ -5,8 +5,6 @@ import ca.javau9.tripplanner.payload.requests.SignupRequest;
 import ca.javau9.tripplanner.payload.responses.JwtResponse;
 import ca.javau9.tripplanner.payload.responses.MessageResponse;
 import ca.javau9.tripplanner.service.AuthService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -15,8 +13,6 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-
-    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     private final AuthService authService;
 
@@ -32,13 +28,10 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody SignupRequest signupRequest) {
-
-
         try {
             MessageResponse response = authService.registerUser(signupRequest);
             return ResponseEntity.ok(response);
         } catch (ResponseStatusException e) {
-
             return ResponseEntity.status(e.getStatusCode())
                     .body(new MessageResponse(e.getReason()));
         }

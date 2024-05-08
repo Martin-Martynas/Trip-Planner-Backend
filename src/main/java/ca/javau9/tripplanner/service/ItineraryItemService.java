@@ -1,12 +1,11 @@
 package ca.javau9.tripplanner.service;
 
-import ca.javau9.tripplanner.dto.ItineraryItemRequest;
+
 import ca.javau9.tripplanner.exception.IncorrectUserException;
 import ca.javau9.tripplanner.exception.ItineraryItemNotFoundException;
 import ca.javau9.tripplanner.models.*;
 import ca.javau9.tripplanner.repository.ItineraryItemRepository;
 import ca.javau9.tripplanner.utils.EntityMapper;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,28 +28,13 @@ public class ItineraryItemService {
         this.entityMapper = entityMapper;
     }
 
-
     public ItineraryItemDto createItineraryItem(ItineraryItemDto itineraryItemDto, String username) {
         ItineraryItem itemBeforeSave = entityMapper.toItineraryItem(itineraryItemDto);
         Trip trip = tripService.getTripById(itineraryItemDto.getTripId());
         itemBeforeSave.setTrip(trip);
         ItineraryItem itemAfterSave = itineraryItemRepository.save(itemBeforeSave);
         return entityMapper.toItineraryItemDto(itemAfterSave);
-
-        /*Long tripId = itineraryItemDto.getTripId();
-        Trip trip = tripService.getTripById(tripId);
-        UserEntity userByUsername = userService.getUserByUsername(username);
-        UserEntity userByTrip = trip.getUserEntity();
-        if(userByUsername.equals(userByTrip)){
-            itemBeforeSave.setTrip(trip);
-            ItineraryItem itemAfterSave = itineraryItemRepository.save(itemBeforeSave);
-            return entityMapper.toItineraryItemDto(itemAfterSave);
-        } else {
-            throw new IncorrectUserException ("Trip with ID" + tripId + " does not belong to this user");
-        }*/
     }
-
-
 
     public List<ItineraryItem> getItineraryItemsForTrip(Long tripId) {
         Trip trip = tripService.getTripById(tripId);
@@ -80,8 +64,6 @@ public class ItineraryItemService {
         ItineraryItem item = itemInBox.get();
         UserEntity user = item.getTrip().getUserEntity();
         if(user.getUsername().equals(username)) {
-            //LocalDate itineraryDate, LocalTime activityTime, String activity, Integer cost,
-            //                            String notes, Long tripId
             item.setItineraryDate(itemDto.getItineraryDate());
             item.setActivityTime(itemDto.getActivityTime());
             item.setActivity(itemDto.getActivity());
@@ -99,10 +81,8 @@ public class ItineraryItemService {
         if(itemInBox.isPresent()) {
             ItineraryItem item = itemInBox.get();
             UserEntity user = item.getTrip().getUserEntity();
-
             if(user.getUsername().equals(username)) {
                 itineraryItemRepository.delete(item);
-
                 return true;
             }
         }

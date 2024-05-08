@@ -30,19 +30,6 @@ public class ItineraryItem {
 
     public ItineraryItem () {}
 
-    public ItineraryItem(Long id, LocalDate itineraryDate, LocalTime activityTime, String activity, String notes,
-                         Integer cost, LocalDateTime createdAt, LocalDateTime updatedAt, Trip trip) {
-        this.id = id;
-        this.itineraryDate = itineraryDate;
-        this.activityTime = activityTime;
-        this.activity = activity;
-        this.notes = notes;
-        this.cost = cost;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.trip = trip;
-    }
-
     public ItineraryItem(LocalDate itineraryDate, LocalTime activityTime, String activity, String notes) {
         this.itineraryDate = itineraryDate;
         this.activityTime = activityTime;

@@ -1,11 +1,8 @@
 package ca.javau9.tripplanner.payload.requests;
 
 public class LoginRequest {
-
         private String username;
-
         private String password;
-
 
         public String getUsername() {
             return username;
