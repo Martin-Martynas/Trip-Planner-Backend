@@ -5,6 +5,7 @@ import ca.javau9.tripplanner.models.TripDto;
 import ca.javau9.tripplanner.security.JwtUtils;
 import ca.javau9.tripplanner.service.TripService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,7 @@ public class TripController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createTrip(@RequestBody TripDto tripDto, HttpServletRequest request) {
+    public ResponseEntity<?> createTrip(@RequestBody @Valid TripDto tripDto, HttpServletRequest request) {
         try {
             String username = jwtUtils.extractUsernameFromToken(request);
             TripDto createdTrip = tripService.createTrip(tripDto, username);
@@ -39,23 +40,19 @@ public class TripController {
     public ResponseEntity<?> getTrip(@PathVariable Long id, HttpServletRequest request) {
         try {
             String username = jwtUtils.extractUsernameFromToken(request);
-            TripDto trip = tripService.getTripDtoById(id);
+            TripDto trip = tripService.getTripDtoById(id, username);
 
-            if (!trip.getCreatedBy().equals(username)) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body("You do not have permission to access this trip.");
-            }
             return ResponseEntity.ok(trip);
         } catch (TripNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to retrieve trip details.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to retrieve trip details.");
         }
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateTrip(@PathVariable Long id,
-                                               @RequestBody TripDto tripDto, HttpServletRequest request) {
+                                               @RequestBody @Valid TripDto tripDto, HttpServletRequest request) {
         try {
             String username = jwtUtils.extractUsernameFromToken(request);
             TripDto updatedTrip = tripService.updateTrip(id, tripDto, username);

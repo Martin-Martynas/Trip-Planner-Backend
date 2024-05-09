@@ -5,6 +5,7 @@ import ca.javau9.tripplanner.payload.requests.SignupRequest;
 import ca.javau9.tripplanner.payload.responses.JwtResponse;
 import ca.javau9.tripplanner.payload.responses.MessageResponse;
 import ca.javau9.tripplanner.service.AuthService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -27,7 +28,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody SignupRequest signupRequest) {
+    public ResponseEntity<?> registerUser(@RequestBody @Valid SignupRequest signupRequest) {
         try {
             MessageResponse response = authService.registerUser(signupRequest);
             return ResponseEntity.ok(response);

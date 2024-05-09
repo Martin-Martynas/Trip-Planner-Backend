@@ -4,6 +4,7 @@ import ca.javau9.tripplanner.models.ItineraryItemDto;
 import ca.javau9.tripplanner.security.JwtUtils;
 import ca.javau9.tripplanner.service.ItineraryItemService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class ItineraryItemController {
         this.jwtUtils = jwtUtils;
     }
     @PostMapping("/create")
-    public ResponseEntity<?> createItineraryItem(@RequestBody ItineraryItemDto itineraryItemDto,
+    public ResponseEntity<?> createItineraryItem(@RequestBody @Valid ItineraryItemDto itineraryItemDto,
                                                  HttpServletRequest request) {
         try {
             String username = jwtUtils.extractUsernameFromToken(request);
@@ -45,7 +46,7 @@ public class ItineraryItemController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateItineraryItem(@PathVariable Long id,
-                                                 @RequestBody ItineraryItemDto itemDto, HttpServletRequest request) {
+                                                 @RequestBody @Valid ItineraryItemDto itemDto, HttpServletRequest request) {
         try {
             String username = jwtUtils.extractUsernameFromToken(request);
             ItineraryItemDto updatedItem = itineraryItemService

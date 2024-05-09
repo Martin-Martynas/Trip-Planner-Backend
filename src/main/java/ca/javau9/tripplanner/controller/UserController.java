@@ -6,6 +6,7 @@ import ca.javau9.tripplanner.security.JwtUtils;
 import ca.javau9.tripplanner.service.AuthService;
 import ca.javau9.tripplanner.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +31,8 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id, HttpServletRequest request){
-        String username = jwtUtils.extractUsernameFromToken(request);
         try{
+            String username = jwtUtils.extractUsernameFromToken(request);
             UserDto userDto = userService.getUserById(id, username);
             return ResponseEntity.ok(userDto);
         } catch (Exception e) {
@@ -40,7 +41,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser( @PathVariable Long id, @RequestBody UpdateRequest updateRequest,
+    public ResponseEntity<?> updateUser( @PathVariable Long id, @RequestBody @Valid UpdateRequest updateRequest,
                                          HttpServletRequest request){
         try{
             String username = jwtUtils.extractUsernameFromToken(request);

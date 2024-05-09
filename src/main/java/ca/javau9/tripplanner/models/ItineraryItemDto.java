@@ -1,5 +1,8 @@
 package ca.javau9.tripplanner.models;
 
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -8,7 +11,9 @@ public class ItineraryItemDto {
     private LocalDate itineraryDate;
     private LocalTime activityTime;
     private String activity;
+    @PositiveOrZero
     private Integer cost;
+    @Size( max = 200, message = "Notes must be between up to 200 characters")
     private String notes;
     private Long tripId;
 

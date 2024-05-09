@@ -1,11 +1,22 @@
 package ca.javau9.tripplanner.payload.requests;
 
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.Set;
 
 public class SignupRequest {
+
+
+        @NotBlank
         private String username;
+        @Email(message = "Email should be valid")
+        @NotBlank
         private String email;
         private Set<String> role;
+        @NotBlank
         private String password;
 
         public String getUsername() {

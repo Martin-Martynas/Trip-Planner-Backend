@@ -1,13 +1,17 @@
 package ca.javau9.tripplanner.models;
 
+import jakarta.validation.constraints.PositiveOrZero;
+
 import java.time.LocalDate;
 import java.util.List;
 
 public class TripDto {
     private Long id;
+
     private String destination;
     private LocalDate startDate;
     private LocalDate endDate;
+    @PositiveOrZero
     private Double budget;
     private String createdBy;
     private List<ItineraryItemDto> itineraryItemDtos;

@@ -33,7 +33,7 @@ public class UserService implements UserDetailsService {
         this.itineraryItemRepository = itineraryItemRepository;
     }
 
-    //CRUD - Read, Update, Delete
+    //CRUD - Read, Delete here. Create, Update in AuthService
 
     public UserDto getUserById(Long id, String username) {
         Optional<UserEntity> userInBox = userRepository.findById(id);
@@ -54,8 +54,8 @@ public class UserService implements UserDetailsService {
         if(userInBox.isPresent()){
             UserEntity user = userInBox.get();
             if(user.getUsername().equals(username)) {
-                tripRepository.deleteByUserEntity(user);
                 itineraryItemRepository.deleteByTripUserEntity(user);
+                tripRepository.deleteByUserEntity(user);
                 userRepository.delete(user);
                 return true;
             }
