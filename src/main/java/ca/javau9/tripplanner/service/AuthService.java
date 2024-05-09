@@ -15,8 +15,6 @@ import ca.javau9.tripplanner.repository.RoleRepository;
 import ca.javau9.tripplanner.repository.UserRepository;
 import ca.javau9.tripplanner.security.JwtUtils;
 import ca.javau9.tripplanner.utils.EntityMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,18 +33,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class AuthService {
-    private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
 
     AuthenticationManager authenticationManager;
-
     UserRepository userRepository;
-
     RoleRepository roleRepository;
-
     PasswordEncoder encoder;
-
     JwtUtils jwtUtils;
-
     EntityMapper entityMapper;
 
     public AuthService (AuthenticationManager authenticationManager,
@@ -73,7 +65,6 @@ public class AuthService {
 
         String jwt = jwtUtils.generateJwtToken(authentication);
         UserDto userDetails = (UserDto) authentication.getPrincipal();
-       /* logger.info("Before: " + userDetails.toString());*/
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
@@ -85,27 +76,22 @@ public class AuthService {
 
         checkUserExists(signupRequest);
 
-
         UserEntity user = createNewUser(signupRequest);
         Set<Role> roles = getInitialRoles(signupRequest);
 
         user.setRoles(roles);
 
-        logger.info("Before: " + user.toString());
-        user = userRepository.save(user);
-        logger.info("After: " + user.toString());
+        userRepository.save(user);
 
         return new MessageResponse("User registered successfully!");
     }
 
     private UserEntity createNewUser(SignupRequest signupRequest) {
-        UserEntity user = new UserEntity(
+        return new UserEntity(
                 signupRequest.getUsername(),
                 signupRequest.getEmail(),
                 encoder.encode(signupRequest.getPassword())
-                );
-        logger.info(user.toString());
-        return user;
+        );
     }
 
     private Set<Role> getInitialRoles(SignupRequest signupRequest) {
@@ -136,36 +122,21 @@ public class AuthService {
         }
     }
 
-
     public UserDto updateUser(Long id, UpdateRequest updateRequest, String username ){
-
-        logger.info("Id before repository: {}", id);
-        logger.info("UserDto before repository : {}", updateRequest);
-        logger.info("username before repository: {}", username);
-
         Optional<UserEntity> userInBox = userRepository.findById(id);
-
-        logger.info("userInBox: {}", userInBox);
 
         if(userInBox.isEmpty()){
             throw new UserNotFoundException("User Not Found");
         }
         UserEntity user = userInBox.get();
 
-        logger.info("user out of box: {}", user);
-
         if(user.getUsername().equals(username)) {
             user.setEmail(updateRequest.getEmail());
             user.setPassword(encoder.encode(updateRequest.getPassword()));
 
-            logger.info("user after change: {}", user);
-
             UserEntity userEntityAfterSave = userRepository.save(user);
-            logger.info("userEntityAfterSave : {}", userEntityAfterSave);
 
-            UserDto userDtoForReturn = entityMapper.toUserDto(userEntityAfterSave);
-            logger.info("userDtoForReturn : {}", userDtoForReturn);
-            return userDtoForReturn;
+            return entityMapper.toUserDto(userEntityAfterSave);
 
         } else {
             throw new IncorrectUserException("User id" + id + "does not belong to" + username);

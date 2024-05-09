@@ -42,12 +42,18 @@ public class TripService {
 
     }
 
-    public TripDto getTripDtoById(Long tripId) {
-        Optional<Trip> box = tripRepository.findById(tripId);
-        if(box.isPresent()) {
-            return entityMapper.toTripDto(box.get());
+    public TripDto getTripDtoById(Long id, String username) {
+        Optional<Trip> tripInBox = tripRepository.findById(id);
+        if(tripInBox.isPresent()) {
+            Trip trip = tripInBox.get();
+            UserEntity user = trip.getUserEntity();
+            if(user.getUsername().equals(username)) {
+                return entityMapper.toTripDto(trip);
+            }  else {
+                throw new IncorrectUserException("You have no access to trip id" + id);
+            }
         } else {
-            throw new TripNotFoundException("Trip not found with ID: " + tripId);
+            throw new TripNotFoundException("Trip not found with ID: " + id);
         }
     }
 

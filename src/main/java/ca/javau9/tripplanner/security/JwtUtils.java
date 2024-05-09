@@ -65,7 +65,6 @@ public class JwtUtils {
     }
 
 
-
     public String extractUsernameFromToken(HttpServletRequest request) {
         // Get the authorization header from the request
         String headerAuth = request.getHeader("Authorization");
@@ -88,9 +87,6 @@ public class JwtUtils {
         // If the header is invalid, return null
         return null;
     }
-
-
-
 
     public String getUserNameFromJwtToken(String token) throws JwtAuthenticationException {
 
